@@ -4,6 +4,8 @@
 
 ✅ Part 01 - Data Understanding, Cleaning & Customer Behaviour Analysis is complete.
 
+✅ Part 02 - Customer-Level Feature Engineering & CLV Target Creation is complete.
+
 ## Dataset
 
 The supplied Excel workbook contains two transaction sheets:
@@ -11,144 +13,132 @@ The supplied Excel workbook contains two transaction sheets:
 - `Year 2009-2010`
 - `Year 2010-2011`
 
-Both sheets contain:
-
-- `Invoice`
-- `StockCode`
-- `Description`
-- `Quantity`
-- `InvoiceDate`
-- `Price`
-- `Customer ID`
-- `Country`
-
 The combined raw dataset contains **1,067,371 transaction records**.
 
-## Part 01 Goal
+After Part 01 cleaning, the transaction dataset contains **779,425 records** and **5,878 unique customers**.
 
-The goal of this stage was to understand the raw transaction data, identify data-quality issues, clean the transaction records, explore customer purchasing behaviour, and prepare the data for customer-level CLV analysis.
+The cleaned transaction data covers **1 December 2009 to 9 December 2011**.
 
-## Data Audit Completed
+## Part 01 Output
 
-The following checks were performed:
-
-- Workbook and sheet inspection
-- Data types
-- Missing values
-- Exact duplicate rows
-- Cancelled invoices
-- Negative quantities
-- Zero quantities
-- Negative prices
-- Zero prices
-- Special adjustment records
-- Combined dataset validation
-
-### Key Audit Results
-
-| Check                 | Year 2009-2010 | Year 2010-2011 |  Combined |
-| --------------------- | -------------: | -------------: | --------: |
-| Rows                  |        525,461 |        541,910 | 1,067,371 |
-| Missing `Description` |          2,928 |          1,454 |     4,382 |
-| Missing `Customer ID` |        107,927 |        135,080 |   243,007 |
-| Exact duplicate rows  |          6,865 |          5,268 |    34,335 |
-| `C`-prefixed invoices |         10,206 |          9,288 |    19,494 |
-| Negative quantities   |         12,326 |         10,624 |    22,950 |
-| Zero quantities       |              0 |              0 |         0 |
-| Negative prices       |              3 |              2 |         5 |
-| Zero prices           |          3,687 |          2,515 |     6,202 |
-
-Negative quantities were analysed separately from `C`-prefixed invoices. There were **3,457 negative-quantity records without a `C` invoice prefix**, and several of these represented special records such as `lost`, `damages`, `short`, and `sold as gold`.
-
-The five negative-price records were inspected and had the description `Adjust bad debt` with missing customer IDs.
-
-## Cleaning Completed
-
-A separate `cleaned_transactions` dataframe was created from the combined raw dataset.
-
-The following rules were applied:
-
-- Removed exact duplicate rows
-- Removed cancelled invoices beginning with `C`
-- Removed transactions with missing `Customer ID`
-- Kept only positive quantities
-- Kept only positive unit prices
-- Converted `Customer ID` to integer after missing values were removed
-- Created `TotalPrice = Quantity × Price`
-
-## Cleaning Results
-
-| Metric                            |        Result |
-| --------------------------------- | ------------: |
-| Raw rows                          |     1,067,371 |
-| Cleaned rows                      |       779,425 |
-| Rows removed                      |       287,946 |
-| Percentage removed                |        26.98% |
-| Columns after adding `TotalPrice` |             9 |
-| Unique customers                  |         5,878 |
-| Unique invoices                   |        36,969 |
-| Recorded transaction value        | 17,374,804.27 |
-
-Final validation confirmed:
-
-- 0 missing `Customer ID` values
-- 0 duplicate rows
-- 0 non-positive quantities
-- 0 non-positive prices
-- 0 missing values in the cleaned dataset
-
-The cleaned dataset covers transactions from **1 December 2009 to 9 December 2011**.
-
-## Customer Behaviour Analysis Completed
-
-The following customer-level analysis was completed:
-
-- Customer total spend
-- Unique invoice count
-- Total items purchased
-- First purchase date
-- Last purchase date
-- Top customers by total spend
-- Purchasing behaviour by country
-- Monthly transaction value
-- Monthly active customers
-
-### Customer-Level Findings
-
-The cleaned dataset contains **5,878 customers**.
-
-Customer spend is strongly uneven:
-
-- Mean total spend: **2,955.90**
-- Median total spend: **867.74**
-- Maximum total spend: **580,987.04**
-
-The customer with the highest recorded total spend had **145 unique invoices**.
-
-Country-level analysis showed the **United Kingdom** had the largest recorded transaction value.
-
-## Outputs Created
-
-### Processed Dataset
+The cleaned transaction dataset was saved as:
 
 ```text
 data/processed/cleaned_transactions.csv
 ```
 
-### Charts
+The raw Excel workbook was kept unchanged.
+
+## Part 02 Goal
+
+The goal of Part 02 was to turn the cleaned transaction data into one row per customer and create meaningful historical features plus a future-value target for later CLV modelling.
+
+## Time-Based Split
+
+A 90-day future window was used.
 
 ```text
-images/01_monthly_revenue.png
-images/02_monthly_active_customers.png
-images/03_top_countries_by_revenue.png
+Latest transaction: 2011-12-09 12:50:00
+Cutoff date:        2011-09-10 12:50:00
+```
+
+Historical customer features were calculated from transactions up to the cutoff.
+
+The future target was calculated from transactions after the cutoff and within the 90-day future window.
+
+## Order-Level Preparation
+
+The observation-period data was converted into order-level data:
+
+- 30,343 orders
+- 30,343 unique invoices
+- One row per invoice
+- No missing values
+
+No invoice was linked to multiple customers.
+
+For invoices with more than one timestamp, the earliest timestamp was used when creating the final order-level dataset.
+
+## Customer-Level Features
+
+The final customer-level table contains **5,281 customers**.
+
+Features created:
+
+- `Recency`
+- `Frequency`
+- `Monetary`
+- `AvgOrderValue`
+- `PurchaseFrequency`
+- `ProductDiversity`
+- `Tenure_days`
+- `Tenure_months`
+- `active_days`
+
+## Future Target
+
+The future period was used to create:
+
+- `Future_90d_Orders`
+- `Future_90d_Value`
+
+The main modelling target is:
+
+```text
+Future_90d_Value
+```
+
+Of the 5,281 customers with historical activity:
+
+- **2,292** made at least one future purchase
+- **2,989** had no purchase during the future period
+
+An exploratory Spearman correlation between historical `Monetary` and `Future_90d_Value` was **0.502**.
+
+## Final Output
+
+The final customer-level CLV dataset contains:
+
+- **5,281 rows**
+- **14 columns**
+
+It was saved as:
+
+```text
+data/processed/customer_clv_dataset.csv
+```
+
+Final columns:
+
+```text
+CustomerID
+first_purchase_date
+last_purchase_date
+Recency
+Tenure_days
+Tenure_months
+active_days
+Frequency
+Monetary
+AvgOrderValue
+PurchaseFrequency
+ProductDiversity
+Future_90d_Orders
+Future_90d_Value
+```
+
+## Part 02 Visuals
+
+```text
+images/04_monetary_distribution.png
+images/05_future_90d_value_distribution.png
 ```
 
 ## Current Progress
 
-✅ Part 01 is complete.
-
-The cleaned transaction dataset is ready for customer-level feature engineering.
+✅ Part 01 complete  
+✅ Part 02 complete
 
 ## Next Step
 
-Move to **Part 02 - Customer-Level Feature Engineering**.
+Move to **Part 03 - CLV Prediction Model**.
