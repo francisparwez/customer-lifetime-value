@@ -9,7 +9,7 @@ The goal is to understand customer purchasing behaviour, prepare the transaction
 1. ✅ Data Understanding, Cleaning & Customer Behaviour Analysis
 2. ✅ Customer-Level Feature Engineering & CLV Target Creation
 3. ✅ CLV Prediction Model
-4. Model Evaluation & Business Insights
+4. ✅ Model Tuning, Interpretability & Customer Value Analysis
 
 ---
 
@@ -354,15 +354,201 @@ The modelling notebook is:
 notebooks/03_clv_prediction_model.ipynb
 ```
 
-## Current Status
+---
 
-✅ Part 01 - Data Understanding, Cleaning & Customer Behaviour Analysis is complete.
+# Part 04 - Model Tuning, Interpretability & Customer Value Analysis
 
-✅ Part 02 - Customer-Level Feature Engineering & CLV Target Creation is complete.
+Part 04 focused on improving the strongest model from Part 03, understanding why the model makes its predictions, and using the predicted CLV values to group customers into practical value segments.
 
-✅ Part 03 - CLV Prediction Model Development & Evaluation is complete.
+## Model Tuning
 
-The next stage is to turn the model results into the final evaluation and business insights.
+The Random Forest from Part 03 was rebuilt using the same feature set and 80/20 train-test split.
+
+The model was tuned using **5-fold cross-validation** with `RandomizedSearchCV`.
+
+The search tested 20 randomly selected hyperparameter combinations across the five folds.
+
+### Best Hyperparameters
+
+| Parameter           | Value |
+| ------------------- | ----: |
+| `n_estimators`      |   300 |
+| `max_depth`         |    10 |
+| `min_samples_split` |     5 |
+| `min_samples_leaf`  |     4 |
+| `max_features`      |   1.0 |
+
+The best cross-validation MAE was **447.26**.
+
+### Original vs Tuned Random Forest
+
+| Model                   |        MAE |        RMSE |         R² |
+| ----------------------- | ---------: | ----------: | ---------: |
+| Original Random Forest  |     592.08 |     5662.33 |     0.0214 |
+| **Tuned Random Forest** | **576.78** | **5622.81** | **0.0350** |
+
+The tuned model improved:
+
+- MAE by **2.59%**
+- RMSE by **0.70%**
+- R² by **0.0136**
+
+The improvement was modest, but it was consistent across all three test-set metrics.
+
+## Model Interpretability
+
+The tuned Random Forest was analysed using:
+
+- built-in feature importance
+- permutation importance
+- partial dependence analysis
+
+### Feature Importance
+
+The tuned Random Forest's built-in feature importance showed:
+
+| Feature           | Importance |
+| ----------------- | ---------: |
+| **Monetary**      | **0.9266** |
+| Recency           |     0.0162 |
+| ProductDiversity  |     0.0161 |
+| Frequency         |     0.0123 |
+| AvgOrderValue     |     0.0094 |
+| PurchaseFrequency |     0.0089 |
+| Tenure_days       |     0.0044 |
+| active_days       |     0.0035 |
+| Tenure_months     |     0.0027 |
+
+`Monetary` was by far the strongest feature.
+
+Permutation importance also ranked `Monetary` first, followed by `Recency`.
+
+### Model Behaviour
+
+Partial dependence analysis showed three main relationships:
+
+- Higher historical `Monetary` was generally associated with higher predicted CLV.
+- Higher `Recency` was generally associated with lower predicted CLV.
+- Higher `PurchaseFrequency` was generally associated with higher predicted CLV.
+
+These are model relationships and should not be treated as causal effects.
+
+## Customer Value Analysis
+
+The tuned model was used to generate predicted 90-day CLV for all **5,281 customers**.
+
+A final customer scoring table was created containing:
+
+- `CustomerID`
+- `Future_90d_Value`
+- `Predicted_90d_Value`
+- `Value_Segment`
+
+The scoring output was saved as:
+
+```text
+data/processed/customer_clv_predictions.csv
+```
+
+## Customer Value Segmentation
+
+Customers were grouped using their predicted 90-day CLV:
+
+- **Low:** bottom 50%
+- **Medium:** 50th–80th percentile
+- **High:** 80th–95th percentile
+- **VIP:** top 5%
+
+### Segment Results
+
+| Segment | Customers | Customer Share | Predicted Value Share | Actual Value Share |
+| ------- | --------: | -------------: | --------------------: | -----------------: |
+| Low     |     2,641 |         50.01% |                 7.83% |             11.35% |
+| Medium  |     1,584 |         29.99% |                17.15% |             16.92% |
+| High    |       792 |         15.00% |                24.71% |             22.44% |
+| **VIP** |   **264** |      **5.00%** |            **50.32%** |         **49.29%** |
+
+The strongest business finding was that the **top 5% of customers represented about half of both predicted and observed future customer value**.
+
+### Customer Behaviour by Segment
+
+The VIP segment showed much stronger historical behaviour than the other groups:
+
+| Measure           |    Low |   Medium |     High |       VIP |
+| ----------------- | -----: | -------: | -------: | --------: |
+| Recency           | 318.68 |   122.72 |    60.33 |     41.14 |
+| Frequency         |   2.06 |     4.79 |    10.74 |     33.42 |
+| Monetary          | 461.26 | 1,471.99 | 4,422.16 | 26,054.47 |
+| AvgOrderValue     | 240.70 |   387.27 |   541.19 |  1,032.19 |
+| PurchaseFrequency |   0.01 |     0.02 |     0.03 |      0.06 |
+| ProductDiversity  |  29.96 |    75.86 |   158.27 |    257.77 |
+| Tenure_days       | 427.84 |   390.84 |   479.29 |    574.12 |
+
+VIP customers were generally more recent, more frequent, higher-spending, higher-order-value, more product-diverse, and longer-tenured.
+
+## Business Recommendations
+
+### 1. Protect VIP customers
+
+VIP customers represent a large share of future customer value, so retention efforts should prioritise this group.
+
+### 2. Move High-value customers toward VIP
+
+High-value customers already show strong behaviour. Loyalty, cross-sell, and upsell activity can focus on increasing purchase frequency and average order value.
+
+### 3. Reactivate customers with high recency
+
+Customers who have gone a long time without purchasing tend to have lower predicted CLV. Reactivation campaigns can focus on customers who still have meaningful historical value.
+
+### 4. Use lower-cost campaigns for Low-value customers
+
+The Low segment contains about half of the customer base but only 7.83% of predicted future value. Lower-cost or automated campaigns may be more appropriate for this group.
+
+## Model Limitation
+
+The tuned Random Forest improved on the original model, but overall predictive performance remains limited.
+
+The final test-set R² was **0.0350**, so the model explains only a small portion of the variation in future customer value.
+
+The future CLV target is highly skewed, with many zero-value customers and a smaller number of very high-value customers.
+
+The model should therefore be used mainly as a **customer prioritisation tool**, rather than as an exact revenue forecast for every individual customer.
+
+## Part 04 Visuals
+
+![Tuned Random Forest Feature Importance](images/11_tuned_rf_feature_importance.png)
+
+![Permutation Importance](images/12_permutation_importance.png)
+
+![Partial Dependence - Monetary](images/13_partial_dependence_monetary.png)
+
+![Partial Dependence - Recency](images/14_partial_dependence_recency.png)
+
+![Partial Dependence - Purchase Frequency](images/15_partial_dependence_purchase_frequency.png)
+
+![Customer Value Segments](images/16_customer_value_segments.png)
+
+![Predicted CLV by Customer Segment](images/17_predicted_clv_by_segment.png)
+
+![Historical Monetary by Customer Segment](images/18_historical_monetary_by_segment.png)
+
+![Actual vs Predicted CLV by Segment](images/19_actual_vs_predicted_clv_by_segment.png)
+
+## Part 04 Output
+
+The modelling notebook is:
+
+```text
+notebooks/04_model_tuning_interpretability_customer_value_analysis.ipynb
+```
+
+The customer scoring output is:
+
+```text
+data/processed/customer_clv_predictions.csv
+```
+
+The prediction CSV remains local because processed CSV files are ignored by `.gitignore`.
 
 ## Current Status
 
@@ -372,11 +558,9 @@ The next stage is to turn the model results into the final evaluation and busine
 
 ✅ **Part 03 - CLV Prediction Model Development & Evaluation is complete.**
 
-The next stage is to review the model results and develop the final business insights.
+✅ **Part 04 - Model Tuning, Interpretability & Customer Value Analysis is complete.**
 
-## Next Stage
-
-The next stage will focus on **Model Evaluation & Business Insights**.
+The CLV modelling, tuning, interpretability, and customer value analysis stages are complete.
 
 ## Project Structure
 
@@ -388,7 +572,8 @@ customer-lifetime-value/
 │   │   └── online_retail_dataset.xlsx
 │   └── processed/
 │       ├── cleaned_transactions.csv
-│       └── customer_clv_dataset.csv
+│       ├── customer_clv_dataset.csv
+│       └── customer_clv_predictions.csv
 │
 ├── images/
 │   ├── 01_monthly_revenue.png
@@ -400,12 +585,22 @@ customer-lifetime-value/
 │   ├── 07_model_comparison_rmse.png
 │   ├── 08_model_comparison_r².png
 │   ├── 09_random_forest_actual_vs_predicted.png
-│   └── 10_random_forest_feature_importance.png
+│   ├── 10_random_forest_feature_importance.png
+│   ├── 11_tuned_rf_feature_importance.png
+│   ├── 12_permutation_importance.png
+│   ├── 13_partial_dependence_monetary.png
+│   ├── 14_partial_dependence_recency.png
+│   ├── 15_partial_dependence_purchase_frequency.png
+│   ├── 16_customer_value_segments.png
+│   ├── 17_predicted_clv_by_segment.png
+│   ├── 18_historical_monetary_by_segment.png
+│   └── 19_actual_vs_predicted_clv_by_segment.png
 │
 ├── notebooks/
 │   ├── 01_data_understanding_cleaning.ipynb
 │   ├── 02_customer_level_feature_engineering.ipynb
-│   └── 03_clv_prediction_model.ipynb
+│   ├── 03_clv_prediction_model.ipynb
+│   └── 04_model_tuning_interpretability_customer_value_analysis.ipynb
 │
 ├── README.md
 ├── SUMMARY.md
