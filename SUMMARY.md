@@ -6,6 +6,8 @@
 
 ✅ Part 02 - Customer-Level Feature Engineering & CLV Target Creation is complete.
 
+✅ Part 03 - CLV Prediction Model Development & Evaluation is complete.
+
 ## Dataset
 
 The supplied Excel workbook contains two transaction sheets:
@@ -134,11 +136,85 @@ images/04_monetary_distribution.png
 images/05_future_90d_value_distribution.png
 ```
 
+## Part 03 - CLV Prediction Model
+
+Part 03 used the customer-level CLV dataset to predict `Future_90d_Value` from historical customer behaviour.
+
+### Model Features
+
+The model used:
+
+- `Recency`
+- `Tenure_days`
+- `Tenure_months`
+- `active_days`
+- `Frequency`
+- `Monetary`
+- `AvgOrderValue`
+- `PurchaseFrequency`
+- `ProductDiversity`
+
+Excluded fields:
+
+- `CustomerID`
+- `first_purchase_date`
+- `last_purchase_date`
+- `Future_90d_Value`
+- `Future_90d_Orders`
+
+`Future_90d_Orders` was excluded to prevent future-data leakage.
+
+### Train-Test Split
+
+An 80/20 train-test split was used with `random_state=42`.
+
+### Models Compared
+
+- DummyRegressor mean baseline
+- Random Forest Regressor
+- XGBoost Regressor
+
+### Test Set Results
+
+| Model         |    MAE |    RMSE |      R² |
+| ------------- | -----: | ------: | ------: |
+| Baseline      | 873.34 | 5725.76 | -0.0006 |
+| Random Forest | 592.08 | 5662.33 |  0.0214 |
+| XGBoost       | 638.70 | 5939.51 | -0.0767 |
+
+Random Forest was the best-performing model across all three metrics.
+
+### Feature Importance
+
+Random Forest feature importance showed:
+
+- `Monetary`: **0.7671**
+- `AvgOrderValue`: **0.1110**
+- `ProductDiversity`: **0.0306**
+- `PurchaseFrequency`: **0.0218**
+- `Recency`: **0.0212**
+- `Frequency`: **0.0196**
+- `active_days`: **0.0115**
+- `Tenure_days`: **0.0088**
+- `Tenure_months`: **0.0082**
+
+The future CLV target is highly skewed, with many zero-value customers and a smaller number of very high-value customers. This helps explain the relatively low R² despite Random Forest improving on the baseline.
+
+### Part 03 Outputs
+
+- `notebooks/03_clv_prediction_model.ipynb`
+- `images/06_model_comparison_mae.png`
+- `images/07_model_comparison_rmse.png`
+- `images/08_model_comparison_r².png`
+- `images/09_random_forest_actual_vs_predicted.png`
+- `images/10_random_forest_feature_importance.png`
+
 ## Current Progress
 
 ✅ Part 01 complete  
-✅ Part 02 complete
+✅ Part 02 complete  
+✅ Part 03 complete
 
 ## Next Step
 
-Move to **Part 03 - CLV Prediction Model**.
+Move to **Part 04 - Model Evaluation & Business Insights**.

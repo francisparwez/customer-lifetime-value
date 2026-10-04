@@ -8,7 +8,7 @@ The goal is to understand customer purchasing behaviour, prepare the transaction
 
 1. ✅ Data Understanding, Cleaning & Customer Behaviour Analysis
 2. ✅ Customer-Level Feature Engineering & CLV Target Creation
-3. CLV Prediction Model
+3. ✅ CLV Prediction Model
 4. Model Evaluation & Business Insights
 
 ---
@@ -248,17 +248,135 @@ data/processed/customer_clv_dataset.csv
 
 These plots were created to inspect the customer-level feature and target distributions before moving to the modelling stage.
 
+# Part 03 - CLV Prediction Model Development & Evaluation
+
+Part 03 uses the customer-level dataset from Part 02 to predict `Future_90d_Value` using historical customer behaviour.
+
+## Modelling Approach
+
+The modelling dataset used these historical customer features:
+
+- `Recency`
+- `Tenure_days`
+- `Tenure_months`
+- `active_days`
+- `Frequency`
+- `Monetary`
+- `AvgOrderValue`
+- `PurchaseFrequency`
+- `ProductDiversity`
+
+The following fields were excluded from the model inputs:
+
+- `CustomerID`
+- `first_purchase_date`
+- `last_purchase_date`
+- `Future_90d_Value`
+- `Future_90d_Orders`
+
+`Future_90d_Orders` was excluded because it comes from the same future period as the target and would introduce future information into the model.
+
+The data was split into training and test sets using an 80/20 split with `random_state=42`.
+
+## Models
+
+Three regression models were compared:
+
+- DummyRegressor mean baseline
+- Random Forest Regressor
+- XGBoost Regressor
+
+The models were evaluated on the same test set using:
+
+- MAE
+- RMSE
+- R²
+
+## Model Results
+
+| Model             |        MAE |        RMSE |         R² |
+| ----------------- | ---------: | ----------: | ---------: |
+| Baseline          |     873.34 |     5725.76 |    -0.0006 |
+| **Random Forest** | **592.08** | **5662.33** | **0.0214** |
+| XGBoost           |     638.70 |     5939.51 |    -0.0767 |
+
+Random Forest performed best across all three metrics and was selected as the best-performing model for this project.
+
+The relatively low R² indicates that the model explains only a small portion of the variation in future customer value. The future CLV target is highly skewed, with many customers having zero future value and a smaller number of very high-value customers.
+
+## Random Forest Feature Importance
+
+The most important features were:
+
+| Feature           | Importance |
+| ----------------- | ---------: |
+| **Monetary**      | **0.7671** |
+| **AvgOrderValue** | **0.1110** |
+| ProductDiversity  |     0.0306 |
+| PurchaseFrequency |     0.0218 |
+| Recency           |     0.0212 |
+| Frequency         |     0.0196 |
+| active_days       |     0.0115 |
+| Tenure_days       |     0.0088 |
+| Tenure_months     |     0.0082 |
+
+`Monetary` was by far the most important feature used by the Random Forest model, followed by `AvgOrderValue`.
+
+Feature importance indicates how useful a feature was to the trained model; it does not establish a causal relationship.
+
+## Part 03 Visuals
+
+### Model Comparison - MAE
+
+![Model Comparison - MAE](images/06_model_comparison_mae.png)
+
+### Model Comparison - RMSE
+
+![Model Comparison - RMSE](images/07_model_comparison_rmse.png)
+
+### Model Comparison - R²
+
+![Model Comparison - R²](images/08_model_comparison_r².png)
+
+### Random Forest - Actual vs Predicted CLV
+
+![Random Forest - Actual vs Predicted CLV](images/09_random_forest_actual_vs_predicted.png)
+
+### Random Forest Feature Importance
+
+![Random Forest Feature Importance](images/10_random_forest_feature_importance.png)
+
+## Part 03 Output
+
+The modelling notebook is:
+
+```text
+notebooks/03_clv_prediction_model.ipynb
+```
+
+## Current Status
+
+✅ Part 01 - Data Understanding, Cleaning & Customer Behaviour Analysis is complete.
+
+✅ Part 02 - Customer-Level Feature Engineering & CLV Target Creation is complete.
+
+✅ Part 03 - CLV Prediction Model Development & Evaluation is complete.
+
+The next stage is to turn the model results into the final evaluation and business insights.
+
 ## Current Status
 
 ✅ **Part 01 - Data Understanding, Cleaning & Customer Behaviour Analysis is complete.**
 
 ✅ **Part 02 - Customer-Level Feature Engineering & CLV Target Creation is complete.**
 
-The customer-level CLV dataset is ready for the next stage.
+✅ **Part 03 - CLV Prediction Model Development & Evaluation is complete.**
+
+The next stage is to review the model results and develop the final business insights.
 
 ## Next Stage
 
-The next stage will focus on **CLV Prediction Model**, using the customer-level features to predict `Future_90d_Value`.
+The next stage will focus on **Model Evaluation & Business Insights**.
 
 ## Project Structure
 
@@ -277,11 +395,17 @@ customer-lifetime-value/
 │   ├── 02_monthly_active_customers.png
 │   ├── 03_top_countries_by_revenue.png
 │   ├── 04_monetary_distribution.png
-│   └── 05_future_90d_value_distribution.png
+│   ├── 05_future_90d_value_distribution.png
+│   ├── 06_model_comparison_mae.png
+│   ├── 07_model_comparison_rmse.png
+│   ├── 08_model_comparison_r².png
+│   ├── 09_random_forest_actual_vs_predicted.png
+│   └── 10_random_forest_feature_importance.png
 │
 ├── notebooks/
 │   ├── 01_data_understanding_cleaning.ipynb
-│   └── 02_customer_level_feature_engineering.ipynb
+│   ├── 02_customer_level_feature_engineering.ipynb
+│   └── 03_clv_prediction_model.ipynb
 │
 ├── README.md
 ├── SUMMARY.md
