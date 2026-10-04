@@ -104,3 +104,43 @@ The **VIP segment represented 50.32% of predicted future value and 49.29% of act
 ### Part 04 Output
 
 The modelling notebook, nine new visualisations, and the customer scoring output were added to the project.
+
+### Part 05 - CLV Business Strategy & Final Executive Report
+
+- Added `05_clv_business_strategy_final_executive_report.ipynb`
+- Loaded the final customer scoring output from Part 04
+- Loaded the customer-level behavioural dataset
+- Validated dataset shapes, missing values, and customer uniqueness
+- Confirmed the Low, Medium, High, and VIP customer segments
+- Calculated the final predicted 90-day value snapshot
+- Confirmed 5,281 customers in the final scoring dataset
+- Calculated total predicted 90-day value of 2,812,461.83
+- Confirmed VIP customers represent 5.00% of the customer base
+- Confirmed VIP customers represent 50.32% of predicted future 90-day value
+- Confirmed VIP customers represent 49.29% of actual future value in the historical evaluation period
+- Combined CLV predictions with historical customer behaviour
+- Created segment-specific business goals, priorities, and recommended actions
+- Created the final customer strategy matrix
+- Created the marketing and retention action plan
+- Defined segment-specific KPIs
+- Created a 90-day business action plan
+- Defined a customer-segment resource allocation strategy
+- Identified immediate business priorities
+- Documented the final executive summary, recommendations, limitations, and conclusion
+- Added three final business strategy visualisations:
+  - `20_segment_value_concentration.png`
+  - `21_segment_average_value.png`
+  - `22_customer_strategy_matrix.png`
+
+### Part 05 Results
+
+| Segment | Customers | Customer Share | Predicted Value Share | Priority |
+| ------- | --------: | -------------: | --------------------: | -------- |
+| Low     |     2,641 |         50.01% |                 7.83% | Low      |
+| Medium  |     1,584 |         29.99% |                17.15% | Medium   |
+| High    |       792 |         15.00% |                24.71% | High     |
+| VIP     |       264 |          5.00% |                50.32% | Critical |
+
+### Final Project Status
+
+All five planned project stages are complete.

@@ -330,13 +330,104 @@ images/18_historical_monetary_by_segment.png
 images/19_actual_vs_predicted_clv_by_segment.png
 ```
 
+## Part 05 - CLV Business Strategy & Final Executive Report
+
+Part 05 translated the final customer predictions and value segments into practical retention, marketing, reactivation, customer development, and resource-allocation strategies.
+
+### Final CLV Snapshot
+
+The final scoring dataset contains **5,281 customers**.
+
+- Total predicted 90-day value: **2,812,461.83**
+- VIP customers: **264**
+- VIP customer share: **5.00%**
+- VIP predicted value share: **50.32%**
+- VIP actual future value share: **49.29%**
+
+The main finding is that the top 5% of customers account for about half of both predicted and observed future customer value.
+
+### Segment Strategy
+
+| Segment | Customers | Customer Share | Predicted Value Share | Priority |
+| ------- | --------: | -------------: | --------------------: | -------- |
+| Low     |     2,641 |         50.01% |                 7.83% | Low      |
+| Medium  |     1,584 |         29.99% |                17.15% | Medium   |
+| High    |       792 |         15.00% |                24.71% | High     |
+| VIP     |       264 |          5.00% |                50.32% | Critical |
+
+### Business Strategy
+
+- **VIP:** Protect and retain with personalised offers, loyalty rewards, priority service, and proactive retention.
+- **High:** Grow customer value through cross-sell, upsell, loyalty incentives, and targeted promotions.
+- **Medium:** Increase engagement and repeat purchasing using product recommendations, reminders, and moderate promotions.
+- **Low:** Maintain efficiently using automated and lower-cost campaigns, with targeted reactivation where appropriate.
+
+### Marketing & Retention KPIs
+
+- VIP retention rate and repeat purchase rate
+- High-to-VIP conversion and average order value
+- Medium repeat purchase rate and purchase frequency
+- Low reactivation rate and cost per reactivated customer
+
+### 90-Day Business Action Plan
+
+| Period     | Focus              | Main Goal                   |
+| ---------- | ------------------ | --------------------------- |
+| Days 1-30  | Prepare and launch | Build the process           |
+| Days 31-60 | Test and measure   | Learn what works            |
+| Days 61-90 | Scale and improve  | Improve resource allocation |
+
+### Resource Allocation
+
+Marketing intensity was defined as:
+
+- VIP — **Very High**
+- High — **High**
+- Medium — **Medium**
+- Low — **Low**
+
+### Immediate Priorities
+
+1. Protect VIP customers.
+2. Grow High-value customers.
+3. Reactivate valuable inactive customers.
+4. Manage Low-value customers efficiently.
+
+### Final Business Recommendations
+
+1. Protect VIP customers.
+2. Grow High-value customers toward VIP.
+3. Reactivate customers with declining engagement.
+4. Manage Low-value customers efficiently.
+5. Refresh CLV scores regularly.
+
+### Part 05 Outputs
+
+```text
+notebooks/05_clv_business_strategy_final_executive_report.ipynb
+images/20_segment_value_concentration.png
+images/21_segment_average_value.png
+images/22_customer_strategy_matrix.png
+```
+
+### Final Executive Conclusion
+
+The end-to-end CLV project is complete. The tuned Random Forest achieved **MAE 576.78, RMSE 5622.81, and R² 0.0350**. Because predictive performance remains limited, the model is best used as a customer prioritisation tool.
+
+The final joined strategy dataset was validated at **5,281 rows × 12 columns**, with no missing values and 5,281 unique customers.
+
+The final business strategy is driven by the strong concentration of customer value: a 5% VIP group represents 50.32% of predicted future value. The framework therefore prioritises VIP retention, High-value growth, Medium customer engagement, and efficient Low-value management.
+
 ## Current Progress
 
 ✅ Part 01 complete  
 ✅ Part 02 complete  
 ✅ Part 03 complete  
-✅ Part 04 complete
+✅ Part 04 complete  
+✅ Part 05 complete
 
-## Next Step
+## Final Status
 
-The CLV modelling, tuning, interpretability, and customer value analysis stages are complete.
+### Project Complete
+
+The complete CLV workflow is finished, including data preparation, customer-level feature engineering, CLV target creation, model development, tuning, interpretability, customer value segmentation, and final business strategy.

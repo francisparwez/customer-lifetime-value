@@ -10,6 +10,7 @@ The goal is to understand customer purchasing behaviour, prepare the transaction
 2. ✅ Customer-Level Feature Engineering & CLV Target Creation
 3. ✅ CLV Prediction Model
 4. ✅ Model Tuning, Interpretability & Customer Value Analysis
+5. ✅ CLV Business Strategy & Final Executive Report
 
 ---
 
@@ -550,6 +551,244 @@ data/processed/customer_clv_predictions.csv
 
 The prediction CSV remains local because processed CSV files are ignored by `.gitignore`.
 
+# Part 05 - CLV Business Strategy & Final Executive Report
+
+Part 05 translates the final CLV predictions and customer value segments into practical business actions. The goal was to identify where retention, marketing, reactivation, and customer development efforts should be concentrated.
+
+## Final CLV Snapshot
+
+The final customer scoring output contains **5,281 customers**.
+
+The total predicted 90-day customer value is:
+
+```text
+2,812,461.83
+```
+
+The final model classified:
+
+- **2,641 Low-value customers** — 50.01% of customers
+- **1,584 Medium-value customers** — 29.99% of customers
+- **792 High-value customers** — 15.00% of customers
+- **264 VIP customers** — 5.00% of customers
+
+The most important business finding is that the **top 5% of customers accounted for 50.32% of predicted future 90-day value and 49.29% of the actual future value observed in the historical evaluation period**.
+
+## Part 05 Work Completed
+
+- Loaded the final customer scoring output from Part 04
+- Loaded the customer-level behavioural dataset from Part 02
+- Validated shapes, data types, missing values, and customer uniqueness
+- Confirmed the final Low, Medium, High, and VIP customer segments
+- Calculated the overall predicted CLV snapshot
+- Compared predicted and actual future value concentration by segment
+- Joined predicted CLV with historical customer behaviour
+- Created segment-specific business goals and priorities
+- Built a customer strategy matrix
+- Created segment-level marketing and retention actions
+- Defined segment-specific suggested channels
+- Defined recommended KPIs for each customer segment
+- Created a phased 90-day business action plan
+- Defined a resource allocation strategy by customer segment
+- Identified immediate business priorities
+- Documented final executive conclusions, recommendations, and limitations
+- Created three final business strategy visualisations
+
+## Customer Strategy by Segment
+
+| Segment | Customers | Customer Share | Predicted Value Share | Priority     |
+| ------- | --------: | -------------: | --------------------: | ------------ |
+| Low     |     2,641 |         50.01% |                 7.83% | Low          |
+| Medium  |     1,584 |         29.99% |                17.15% | Medium       |
+| High    |       792 |         15.00% |                24.71% | High         |
+| **VIP** |   **264** |      **5.00%** |            **50.32%** | **Critical** |
+
+### Low
+
+**Goal:** Maintain efficiently.
+
+Recommended approach:
+
+- Automated email campaigns
+- Occasional promotions
+- Lower-cost digital marketing
+- Limited high-touch activity
+
+The Low segment contains about half of the customers but only **7.83% of predicted future value**, so the strategy emphasises efficiency rather than intensive one-to-one activity.
+
+### Medium
+
+**Goal:** Increase engagement.
+
+Recommended approach:
+
+- Product recommendations
+- Repeat-purchase reminders
+- Cross-sell offers
+- Moderate promotional activity
+
+The focus is to increase engagement, purchase frequency, and repeat purchasing.
+
+### High
+
+**Goal:** Grow customer value.
+
+Recommended approach:
+
+- Loyalty incentives
+- Targeted promotions
+- Cross-selling
+- Upselling opportunities
+
+The main objective is to increase purchase frequency and average order value and move promising High-value customers toward the VIP group.
+
+### VIP
+
+**Goal:** Protect and retain.
+
+Recommended approach:
+
+- Personalised offers
+- Loyalty rewards
+- Priority service
+- Proactive retention
+- Direct customer outreach where appropriate
+
+The VIP group receives the highest priority because a very small customer group represents about half of the predicted future value.
+
+## Historical Customer Behaviour by Segment
+
+The VIP segment showed stronger historical purchasing behaviour than the other groups:
+
+| Measure           |    Low |   Medium |     High |       VIP |
+| ----------------- | -----: | -------: | -------: | --------: |
+| Recency           | 318.68 |   122.72 |    60.33 |     41.14 |
+| Frequency         |   2.06 |     4.79 |    10.74 |     33.42 |
+| Monetary          | 461.26 | 1,471.99 | 4,422.16 | 26,054.47 |
+| AvgOrderValue     | 240.70 |   387.27 |   541.19 |  1,032.19 |
+| PurchaseFrequency |   0.01 |     0.02 |     0.03 |      0.06 |
+| ProductDiversity  |  29.96 |    75.86 |   158.27 |    257.77 |
+| Tenure_days       | 427.84 |   390.84 |   479.29 |    574.12 |
+
+VIP customers were generally more recent, more frequent, higher-spending, higher-order-value, more product-diverse, and longer-tenured.
+
+## Marketing & Retention Action Plan
+
+| Segment | Priority | Primary Objective                                            | Recommended Actions                                                         | Suggested Channel                                   | Primary KPI                                           |
+| ------- | -------- | ------------------------------------------------------------ | --------------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------- |
+| VIP     | Critical | Retain and protect high-value customers                      | Personalised offers, loyalty rewards, priority service, proactive retention | Email, loyalty programme, direct outreach           | VIP retention rate and repeat purchase rate           |
+| High    | High     | Increase value and move customers toward VIP                 | Cross-sell, upsell, loyalty incentives, targeted promotions                 | Email, personalised promotions, loyalty programme   | Conversion to VIP and increase in average order value |
+| Medium  | Medium   | Increase engagement and repeat purchasing                    | Product recommendations, repeat-purchase reminders, moderate promotions     | Email, product recommendations, automated campaigns | Repeat purchase rate and purchase frequency           |
+| Low     | Low      | Maintain efficiently and identify reactivation opportunities | Automated campaigns, low-cost promotions, targeted reactivation             | Automated email, lower-cost digital campaigns       | Reactivation rate and cost per reactivated customer   |
+
+## 90-Day Business Action Plan
+
+| Period     | Focus              | Main Actions                                                                                                      | Main Goal                   |
+| ---------- | ------------------ | ----------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| Days 1-30  | Prepare and launch | Load customer segments into marketing systems, identify VIP customers, and prepare segment-specific campaigns     | Build the process           |
+| Days 31-60 | Test and measure   | Run targeted campaigns by segment, monitor KPIs, and compare customer response across groups                      | Learn what works            |
+| Days 61-90 | Scale and improve  | Scale the strongest campaigns, adjust weak campaigns, and refresh customer segments using updated CLV predictions | Improve resource allocation |
+
+## Resource Allocation Strategy
+
+Marketing effort should not be distributed equally across all customers.
+
+| Segment | Marketing Intensity | Recommended Approach                      |
+| ------- | ------------------- | ----------------------------------------- |
+| VIP     | Very High           | High-touch retention and loyalty          |
+| High    | High                | Targeted growth and value expansion       |
+| Medium  | Medium              | Automated engagement with selected offers |
+| Low     | Low                 | Low-cost and automated marketing          |
+
+## Immediate Business Priorities
+
+1. **Protect VIP customers** because 5% of customers represent 50.32% of predicted future value.
+2. **Grow High-value customers** because they represent another 24.71% of predicted future value.
+3. **Reactivate valuable inactive customers** because higher recency is associated with lower predicted CLV.
+4. **Manage Low-value customers efficiently** because 50.01% of customers represent only 7.83% of predicted future value.
+
+## Final Business Recommendations
+
+### 1. Protect the VIP segment
+
+Prioritise retention and loyalty activity for VIP customers because this small group represents a disproportionately large share of predicted future value.
+
+### 2. Grow High-value customers
+
+Use targeted cross-selling, upselling, and loyalty activity to increase purchase frequency and average order value and move suitable customers toward VIP status.
+
+### 3. Reactivate customers with declining engagement
+
+Use high Recency as a signal for reactivation, especially when the customer still has meaningful historical spending or purchasing activity.
+
+### 4. Manage Low-value customers efficiently
+
+Use lower-cost and automated campaigns for the Low segment rather than allocating the same level of high-touch effort used for VIP customers.
+
+### 5. Refresh the CLV scores regularly
+
+Customer behaviour changes over time, so predictions and value segments should be refreshed periodically rather than treated as permanent labels.
+
+## Part 05 Visuals
+
+![Segment Value Concentration](images/20_segment_value_concentration.png)
+
+![Average Predicted Value by Segment](images/21_segment_average_value.png)
+
+![Customer Strategy Matrix](images/22_customer_strategy_matrix.png)
+
+## Final Executive Summary
+
+The completed project developed an end-to-end Customer Lifetime Value workflow from raw retail transactions to customer-level business recommendations.
+
+The final tuned Random Forest achieved:
+
+- **MAE:** 576.78
+- **RMSE:** 5622.81
+- **R²:** 0.0350
+
+The model was therefore used mainly as a **customer prioritisation tool**, not as an exact revenue forecast for every individual customer.
+
+The most important business finding is the concentration of customer value: **5% of customers were classified as VIP and accounted for 50.32% of predicted future 90-day value and 49.29% of actual future value in the historical evaluation period**.
+
+The final strategy is to protect VIP customers, grow High-value customers toward VIP, increase engagement and repeat purchasing among Medium customers, and manage Low-value customers through lower-cost or automated campaigns.
+
+## Final Project Limitations
+
+- The future CLV target is highly skewed, with many customers having zero future value and a smaller number of very high-value customers.
+- The final tuned model achieved an R² of **0.0350**, so it explains only a small portion of the variation in future customer value.
+- The customer segments are based on model predictions and should therefore be used for prioritisation rather than treated as exact forecasts.
+- The actual-value comparison in the segment analysis is retrospective because the future-period outcomes are already known in this historical dataset.
+- The project does not include campaign costs, customer acquisition costs, profit margins, or actual marketing response data, so the resource allocation strategy is directional rather than a detailed budget plan.
+
+## Final Project Conclusion
+
+The project is complete from data preparation through modelling, tuning, interpretation, customer segmentation, and business strategy.
+
+The resulting framework can be used to prioritise retention, identify growth opportunities, target reactivation campaigns, and support more efficient marketing resource allocation.
+
+## Part 05 Outputs
+
+The final business strategy notebook is:
+
+```text
+notebooks/05_clv_business_strategy_final_executive_report.ipynb
+```
+
+The final customer scoring output remains:
+
+```text
+data/processed/customer_clv_predictions.csv
+```
+
+The Part 05 visualisations are:
+
+```text
+images/20_segment_value_concentration.png
+images/21_segment_average_value.png
+images/22_customer_strategy_matrix.png
+```
+
 ## Current Status
 
 ✅ **Part 01 - Data Understanding, Cleaning & Customer Behaviour Analysis is complete.**
@@ -560,7 +799,11 @@ The prediction CSV remains local because processed CSV files are ignored by `.gi
 
 ✅ **Part 04 - Model Tuning, Interpretability & Customer Value Analysis is complete.**
 
-The CLV modelling, tuning, interpretability, and customer value analysis stages are complete.
+✅ **Part 05 - CLV Business Strategy & Final Executive Report is complete.**
+
+### Project Complete
+
+All planned stages of the Customer Lifetime Value project are complete, from raw transaction cleaning and customer-level feature engineering through model development, tuning, interpretation, segmentation, and final business strategy.
 
 ## Project Structure
 
@@ -594,13 +837,17 @@ customer-lifetime-value/
 │   ├── 16_customer_value_segments.png
 │   ├── 17_predicted_clv_by_segment.png
 │   ├── 18_historical_monetary_by_segment.png
-│   └── 19_actual_vs_predicted_clv_by_segment.png
+│   ├── 19_actual_vs_predicted_clv_by_segment.png
+│   ├── 20_segment_value_concentration.png
+│   ├── 21_segment_average_value.png
+│   └── 22_customer_strategy_matrix.png
 │
 ├── notebooks/
 │   ├── 01_data_understanding_cleaning.ipynb
 │   ├── 02_customer_level_feature_engineering.ipynb
 │   ├── 03_clv_prediction_model.ipynb
-│   └── 04_model_tuning_interpretability_customer_value_analysis.ipynb
+│   ├── 04_model_tuning_interpretability_customer_value_analysis.ipynb
+│   └── 05_clv_business_strategy_final_executive_report.ipynb
 │
 ├── README.md
 ├── SUMMARY.md
